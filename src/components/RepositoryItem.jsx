@@ -1,65 +1,52 @@
 import { View, StyleSheet, Image } from 'react-native'
+
+import theme from '../theme';
 import Text from './Text'
+import formatInThousands from '../utils/formatInThousands';
+
+
+const CountItem = ({ label, count }) => {
+    return (
+      <View style={styles.countItem}>
+        <Text style={styles.countItemCount} fontWeight="bold">
+          {formatInThousands(count)}
+        </Text>
+        <Text color="textSecondary">{label}</Text>
+      </View>
+    );
+  };
 
 const RepositoryItem = ({ listItem }) => {
     
     const Item = () => (
-        
-        <View style={styles.item}>
-          <View style={[styles.row]}>
-            <View>
-                <Image 
-                style={styles.image} 
-                source={{uri: listItem.ownerAvatarUrl}}>
-                </Image>
-            </View>
-            <View style={styles.row}>
-                <View>
-                    <Text style={styles.title}>{listItem.fullName}</Text>
-                    <Text>{listItem.description}</Text>
+        <View style={styles.container}>
+            <View style={styles.topContainer}>
+                <View style={styles.avatarContainer}>
+                <Image style={styles.avatar} source={{uri: listItem.ownerAvatarUrl}} />
+                </View>
+                <View style={styles.contentContainer}>
+                    <Text 
+                    style={styles.nameText} 
+                    fontWeight="bold" 
+                    fontSize="subheading" 
+                    numberOfLines={1}
+                    >
+                        {listItem.fullName}
+                    </Text>
+                    <Text style={styles.descriptionText} color="textSecondary">{listItem.description}</Text>
+                    {listItem.language ? (
+                        <View style={styles.languageContainer}>
+                            <Text style={styles.languageText}>{listItem.language}</Text>
+                        </View>
+                ) : null}
                 </View>
             </View>
-            <View>
+            <View style={styles.bottomContainer}>
+                <CountItem count={listItem.stargazersCount} label="Stars" />
+                <CountItem count={listItem.forksCount} label="Forks" />
+                <CountItem count={listItem.reviewCount} label="Reviews" />
+                <CountItem count={listItem.ratingAverage} label="Rating" />
             </View>
-          </View>
-           <View style={[styles.row]}>
-            <View style={styles.lang}>
-                <Text backgroundColor="secondary" style={styles.langBtn}>{listItem.language}</Text>
-            </View>
-           </View>
-            <View style={[ styles.row]}>
-            <View style={styles.counts}>
-                <Text style={styles.bold}>
-                    {listItem.stargazersCount >= 1000 ?
-                    (listItem.stargazersCount / 1000).toFixed(1) + 'k' :
-                    listItem.stargazersCount 
-                }
-                </Text>
-                <Text style={styles.gray}>Stars</Text>
-            </View>
-            <View style={[styles.row]}>
-                <View style={styles.counts}>
-                    <Text style={styles.bold}>
-                    {listItem.forksCount >= 1000 ?
-                    (listItem.forksCount / 1000).toFixed(1) + 'k' :
-                    listItem.forksCount
-                    }</Text>
-                    <Text style={styles.gray}>Forks</Text>
-                </View> 
-            </View>
-            <View style={[ styles.row]}>
-                <View style={styles.counts}>
-                    <Text style={styles.bold}>{listItem.reviewCount}</Text>
-                    <Text style={styles.gray}>Reviews</Text>
-                </View>
-            </View>
-            <View style={[ styles.row]}>
-                <View style={styles.counts}>
-                    <Text style={styles.bold}>{listItem.ratingAverage}</Text>
-                    <Text style={styles.gray}>Rating</Text>
-                </View>
-            </View>
-          </View>
         </View>
       );
 
@@ -69,49 +56,57 @@ const RepositoryItem = ({ listItem }) => {
 
 }
 const styles = StyleSheet.create({
-    item: {
-      backgroundColor:'white',  
-      paddingHorizontal: 3,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-around',
-      alignItems: 'baseline',
-    },
-    row: {
-        padding: 5,
-        flex: 1,
-        display: 'flex',
+    container: {
+        backgroundColor: 'white',
+        padding: 15,
+      },
+      topContainer: {
+        flexDirection: 'row',
+        marginBottom: 15,
+      },
+      bottomContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-    },
-    counts: {
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    lang: {
-        margin: 10,
-        borderRadius: 40,
-        overflow: 'hidden',
-        display: 'flex',
+      },
+      avatarContainer: {
+        flexGrow: 0,
+        marginRight: 20,
+      },
+      contentContainer: {
+        flexGrow: 1,
+        flexShrink: 1,
+      },
+      nameText: {
+        marginBottom: 5,
+      },
+      descriptionText: {
+        flexGrow: 1,
+      },
+      avatar: {
+        width: 45,
+        height: 45,
+        borderRadius: theme.roundness,
+      },
+      countItem: {
+        flexGrow: 0,
+        alignItems: 'center',
         justifyContent: 'center',
-    },
-    langBtn: {
-        padding: 5
-    },
-    bold: {
-        fontWeight: 'bold'
-    },
-    gray: {
-        color: 'gray'
-    },
-    image: {
-      width: 50,
-      height: 50,
-      padding: 30
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    }
+        paddingHorizontal: 15,
+      },
+      countItemCount: {
+        marginBottom: 5,
+      },
+      languageContainer: {
+        marginTop: 10,
+        flexDirection: 'row',
+      },
+      languageText: {
+        color: 'white',
+        backgroundColor: theme.colors.primary,
+        borderRadius: theme.roundness,
+        flexGrow: 0,
+        paddingVertical: 3,
+        paddingHorizontal: 6,
+      },
   });
 export default RepositoryItem
